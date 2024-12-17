@@ -14,9 +14,8 @@ public class MqttController {
     }
 
     @PostMapping("/publish")
-    public String publishSensorData(@RequestBody String sensorData) {
-        mqttService.publish(sensorData);
-        return "Data published";
+    public String publishToTopic(@RequestParam String topic, @RequestBody String message) {
+        mqttService.publish(topic, message);
+        return "Message published to topic: " + topic;
     }
 }
-
