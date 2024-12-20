@@ -1,31 +1,41 @@
 package com.example.IoTEnvMonitApp.config;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import com.hivemq.client.mqtt.MqttClient;
+import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import static com.hivemq.client.mqtt.MqttGlobalPublishFilter.ALL;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Configuration
 public class MqttConfig {
 
-    private static final String BROKER_URL = "tcp://broker.hivemq.com:1883";  // Example broker
-    private static final String CLIENT_ID = "spring_mqtt_client";
+    private static final String HOST = "594bf801d8c342e993ed74b68dbbc232.s1.eu.hivemq.cloud";  // Replace with your broker URL
+    private static final int PORT = 8883;  // TLS-secured port for HiveMQ Cloud
+    private static final String USERNAME = "web_client";  // Replace with your username
+    private static final String PASSWORD = "Web32_client_pwd";  // Replace with your password
 
     @Bean
-    public MqttClient mqttClient() throws MqttException {
-        MqttClient mqttClient = new MqttClient(BROKER_URL, CLIENT_ID, new MemoryPersistence());
+    public Mqtt5BlockingClient mqttClient() {
+        // Create an MQTT client using MQTT 5
+        Mqtt5BlockingClient client = MqttClient.builder()
+                .useMqttVersion5()
+                .serverHost(HOST)
+                .serverPort(PORT)
+                .sslWithDefaultConfig()  // Use SSL with default configuration
+                .buildBlocking();
 
-        // Create and set connection options (if necessary)
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setCleanSession(true);
-        options.setKeepAliveInterval(60);
+        // Connect to HiveMQ Cloud with TLS and username/password
+        client.connectWith()
+                .simpleAuth()
+                .username(USERNAME)
+                .password(UTF_8.encode(PASSWORD))
+                .applySimpleAuth()
+                .send();
 
-        // Connect to the MQTT broker
-        mqttClient.connect(options);
+        System.out.println("Connected successfully to HiveMQ");
 
-        return mqttClient;
+        return client;
     }
 }
 

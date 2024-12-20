@@ -28,6 +28,7 @@ dependencies {
 
 	// MQTT dependencies
 	implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5") // For MQTT communication
+	implementation ("com.hivemq:hivemq-mqtt-client:1.2.1")
 
 	// Jakarta Persistence API (JPA)
 	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0") // Required for JPA annotations
