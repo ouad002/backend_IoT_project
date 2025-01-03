@@ -22,7 +22,6 @@ public class SensorController {
     @PostMapping("/data")
     public SensorData saveSensorData(@RequestBody SensorData sensorData) {
         // Log the received data
-        System.out.println("Received sensor data: " + sensorData);
         return sensorService.saveSensorData(sensorData);
     }
 }

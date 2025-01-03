@@ -1,3 +1,4 @@
+
 package com.example.IoTEnvMonitApp.service;
 
 import com.example.IoTEnvMonitApp.model.SensorData;
@@ -62,10 +63,16 @@ public class MqttService {
         System.out.println("Received sensor data: " + payload);
         try {
             SensorData sensorData = objectMapper.readValue(payload, SensorData.class);
+            System.out.println("Parsed sensor data: " + sensorData);
             sensorService.saveSensorData(sensorData);
+            System.out.println("Sensor data saved: " + sensorData);
         } catch (Exception e) {
+            System.err.println("Error parsing or saving sensor data: " + e.getMessage());
             e.printStackTrace();
         }
+        // Example of publishing a message to "rooms/message"
+        String responseMessage = "{\"room\":1, \"message\":\"Data received successfully\"}";
+        publish("rooms/message", responseMessage);
     }
 }
 
